@@ -1,11 +1,21 @@
 const express = require("express");
 const app = express();
-app.use("/1",(req,res)=>{
-    res.send("hello world1")
+
+app.listen(7777,function(){
+    console.log("Server is listening on port number 7777")
 })
-app.use("/",(req,res)=>{
-    res.send("hello world")
-})
-app.listen(1234,()=>{
-    console.log("server is listening on port num 1244")
-})
+
+app.use("/user", (req,res,next) => {
+    console.log("User 1")
+    //res.send("Hello User 1");
+    next()
+}, [(req,res, next)=>{
+    console.log("User 2");
+    //res.send("Hello User 2");
+    next()
+}],
+    (req,res)=>{
+        console.log("User 3");
+        res.send("Hello User 3");
+    }
+)
