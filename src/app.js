@@ -19,3 +19,12 @@ app.use("/user", (req,res,next) => {
         res.send("Hello User 3");
     }
 )
+
+app.use("/test", (req,res,next)=>{
+    next()
+})
+app.use("/test", (req,res,next)=>{
+    next()
+}, (re,res,next) =>{
+    res.send("Hello")
+})
