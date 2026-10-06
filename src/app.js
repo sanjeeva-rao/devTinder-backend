@@ -1,9 +1,24 @@
 const express = require("express");
 const { createDatabse } = require("./Config/dataBase.js");
 const app = express();
-const User = require("./model/user.js")
+const User = require("./model/user.js");
+const {signUpValidation} = require("./utils/validation.js")
 
 app.use(express.json())
+
+app.post("/signUp", async(req,res) => {
+    // create new instance of user model
+    const userData = new User(req.body);
+    try{
+        signUpValidation(req)
+        await userData.save();
+        res.send("signup successfull")
+    }
+    catch(err){
+        res.status(500).send("Error: " + err )
+    }
+   
+})
 
 app.get("/user", async(req,res) => {
     try{
@@ -46,18 +61,6 @@ app.patch("/user", async(req,res)=>{
     }
 })
 
-app.post("/signUp", async(req,res) => {
-    // create new instance of user model
-    const userData = new User(req.body)
-    try{
-        await userData.save();
-        res.send("signup successfull")
-    }
-    catch{
-        res.status(500).send("Signup failed")
-    }
-   
-})
 createDatabse().then(function(){
     console.log("connection success")
     app.listen(7777,function(){
