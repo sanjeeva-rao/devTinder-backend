@@ -15,4 +15,13 @@ const signUpValidation = (req) => {
     }
 }
 
-module.exports = {signUpValidation}
+const loginValidation = (email,password) => {
+    if(!email){
+        throw new Error("Enter email")
+    }
+    if(!validator.isEmail(email)) {
+        throw new Error("Invalid email")
+    }
+}
+
+module.exports = {signUpValidation, loginValidation}
