@@ -4,8 +4,13 @@ const app = express();
 const User = require("./model/user.js");
 const {signUpValidation, loginValidation} = require("./utils/validation.js");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const {userAuth} = require("./middleWare/auth.js")
 
-app.use(express.json())
+app.use(express.json());
+
+app.use(cookieParser());
 
 app.post("/signUp", async(req,res) => {
     try{
@@ -30,54 +35,37 @@ app.post("/login", async(req,res) => {
         const {email,password} = req.body;
         loginValidation(email,password);
         const userData = await User.findOne({email: email});
-        console.log(password)
         const pwdMatch = await bcrypt.compare(password, userData.password);
+        // create jwt
+        const token = jwt.sign({id: userData._id}, "dev@Tinder");
+        // create cooke
+        res.cookie("token", token)
         if(!pwdMatch) throw new Error("Invalid password")
         res.send("Successfully completed login");
     }
     catch(err){
         res.status(500).send("Error: " + err )
     }
-})
+});
 
-app.get("/user", async(req,res) => {
+app.use("/", userAuth)
+
+app.get("/profile", async(req,res) => {
     try{
-        const userData = await User.findOne({email: req.body.email})
-        res.send(userData)
+        const userDetails = res.userDetails
+        res.send(userDetails)
     }
     catch(err){
-        res.status(400).send("Some thing went wrong !")
-    }
-})
-
-// Get all the users from data base
-app.get("/feed", async(req,res) => {
-    try{
-        const allData = await User.find({});
-        res.send(allData)
-    }
-    catch(err){
-        res.status(400).send("Some thing went wrong !")
+        res.status(500).send("Error: " + err )
     }
 })
 
-app.delete("/user", async(req,res)=>{
+app.post("/sendRequest",  async(req, res) => {
     try{
-      const deletedData = await User.findByIdAndDelete(req.body.id);
-      res.send(deletedData)
+        res.send("Sent Connection request successfully")
     }
     catch(err){
-        res.status(400).send("Some thing went wrong !")
-    }
-})
-
-app.patch("/user", async(req,res)=>{
-    try{
-        const updatedData = await User.findByIdAndUpdate(req.body._id, req.body, {returnDocument: "after"});
-        res.send(updatedData)
-    }
-    catch(err){
-        res.status(400).send("Some thing went wrong !", err)
+        res.status(500).send("Error: " + err )
     }
 })
 

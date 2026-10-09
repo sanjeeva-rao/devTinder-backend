@@ -1,25 +1,20 @@
-const adminAuth = (req,res,next)=>{
-    // Add authentication
-    console.log("Authentication......")
-    let token = req.query.id
-    if(token === "xyz"){
-        next();
+const jwt = require("jsonwebtoken");
+const User = require("../model/user");
+
+const userAuth = async(req,res,next)=>{
+    try{
+        const {token} = req.cookies;
+        if(!token) throw new Error("Token expired");
+        const decoded = jwt.verify(token, "dev@Tinder");
+        const userId = decoded.id;
+        const userDetils = await User.findById(userId);
+        if(!userDetils) throw new Error("User not found")
+        res.userDetails = userDetils;
+        next()
     }
-    else{
-        res.status(401).send("Un authorised")
+    catch(err){
+        res.status(500).send("Error: " + err)
     }
 }
 
-const userAuth = (req,res,next)=>{
-    // Add authentication
-    console.log("Authentication......")
-    let token = req.query.id
-    if(token === "xyz"){
-        next();
-    }
-    else{
-        res.status(401).send("Un authorised")
-    }
-}
-
-module.exports = {adminAuth, userAuth}
+module.exports = {userAuth}
