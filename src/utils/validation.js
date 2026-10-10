@@ -24,4 +24,10 @@ const loginValidation = (email,password) => {
     }
 }
 
-module.exports = {signUpValidation, loginValidation}
+const profileValidate = (req) => {
+    const editIncludes = ["firstName", "lastName", "age", "gender"];
+    const isUpdateNeeded = Object.keys(req.body).every(key => editIncludes.includes(key));
+    return isUpdateNeeded;
+}
+
+module.exports = {signUpValidation, loginValidation, profileValidate}

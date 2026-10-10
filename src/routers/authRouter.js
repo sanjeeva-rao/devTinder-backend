@@ -27,7 +27,8 @@ authRouter.post("/login", async(req,res) => {
         const {email,password} = req.body;
         loginValidation(email,password);
         const userData = await User.findOne({email: email});
-        const pwdMatch = await userData.isPasswordValid(password);
+        if(!userData) throw new Error("Invalid user");
+        const pwdMatch = await userData.isPwdMatch(password);
         if(!pwdMatch) throw new Error("Invalid password")
         // create jwt
         const token = userData.createJwt();
