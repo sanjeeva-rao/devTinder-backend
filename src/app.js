@@ -35,12 +35,12 @@ app.post("/login", async(req,res) => {
         const {email,password} = req.body;
         loginValidation(email,password);
         const userData = await User.findOne({email: email});
-        const pwdMatch = await bcrypt.compare(password, userData.password);
+        const pwdMatch = await userData.isPasswordValid(password);
+        if(!pwdMatch) throw new Error("Invalid password")
         // create jwt
-        const token = jwt.sign({id: userData._id}, "dev@Tinder");
+        const token = userData.createJwt();
         // create cooke
         res.cookie("token", token)
-        if(!pwdMatch) throw new Error("Invalid password")
         res.send("Successfully completed login");
     }
     catch(err){
