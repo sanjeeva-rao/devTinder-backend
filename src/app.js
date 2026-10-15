@@ -4,7 +4,8 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routers/authRouter.js");
 const connectionRequestRouter = require("./routers/connectionRequests.js");
-const profileRouter = require("./routers/profile.js")
+const profileRouter = require("./routers/profile.js");
+const userRouter = require("./routers/userRouter.js")
 
 app.use(express.json());
 
@@ -12,7 +13,8 @@ app.use(cookieParser());
 
 app.use("/", authRouter);
 app.use("/", connectionRequestRouter);
-app.use("/", profileRouter)
+app.use("/", profileRouter);
+app.use("/", userRouter)
 
 createDatabse().then(function(){
     console.log("connection success")
