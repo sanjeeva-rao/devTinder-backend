@@ -34,7 +34,7 @@ authRouter.post("/login", async(req,res) => {
         const token = userData.createJwt();
         // create cooke
         res.cookie("token", token)
-        res.send("Successfully completed login");
+        res.send(userData);
     }
     catch(err){
         res.status(500).send("Error: " + err )
