@@ -48,6 +48,13 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    "photoUrl": {
+        type: String,
+    },
+    "skills": {
+        type: String,
+        maxLength: 100
     }
 })
 

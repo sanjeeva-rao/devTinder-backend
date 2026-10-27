@@ -14,10 +14,14 @@ userRouter.get("/user/allRequests", userAuth, async (req,res) => {
                 connectionId : req._id,
                 userId : req.fromUserId._id,
                 firstName: req.fromUserId.firstName,
-                lastName: req.fromUserId.lastName
+                lastName: req.fromUserId.lastName,
+                skills: req.fromUserId.skills,
+                age: req.fromUserId.age,
+                photoUrl: req.fromUserId.photoUrl,
+                id: req.fromUserId._id
             }
         })
-        res.json({message: "All connection requests", data:  requestsData})
+        res.send(requestsData)
     }
 
     catch(err){
@@ -28,7 +32,6 @@ userRouter.get("/user/allRequests", userAuth, async (req,res) => {
 userRouter.get("/user/connections", userAuth, async(req,res)=>{
      try{
         const loginUser = res.userDetails;
-        console.log(loginUser)
         const allConnections = await connectionRequestsSchema.find({$or: 
             [{fromUserId: loginUser._id, connectionType: "accepted"}, 
             {toUserId: loginUser._id, connectionType: "accepted"}
@@ -39,10 +42,14 @@ userRouter.get("/user/connections", userAuth, async(req,res)=>{
             return{
                 connectionId: req._id,
                 firstName: otherUser.firstName,
-                lastName: otherUser.lastName
+                lastName: otherUser.lastName,
+                skills: otherUser.skills,
+                age: otherUser.age,
+                photoUrl: otherUser.photoUrl,
+                id: otherUser._id
             }
         })
-        res.json({message: "All connections", data: data})
+        res.send(data)
     }
 
     catch(err){
@@ -71,8 +78,8 @@ userRouter.get("/feed", userAuth, async(req,res) => {
         const skip = (page-1)*limit
         
         // Filter users other than himself and connections sent/received
-        const feedUsers = await User.find({_id: {$nin: Array.from(hideUsers)}}).select("firstName lastName").limit(limit).skip(skip)
-        res.json({message: "Feed users", data: feedUsers})
+        const feedUsers = await User.find({_id: {$nin: Array.from(hideUsers)}}).select("firstName lastName age skills gender photoUrl").limit(limit).skip(skip)
+        res.send(feedUsers)
     }
     catch(err){
         res.status(400).json({message: "Error: "+err.message})

@@ -14,7 +14,11 @@ authRouter.post("/signUp", async(req,res) => {
         // create new instance of user model
         const userData = new User(req.body);
         await userData.save();
-        res.send("signup successfull")
+        // create jwt
+        const token = userData.createJwt();
+        // create cooke
+        res.cookie("token", token)
+        res.send(userData);
     }
     catch(err){
         res.status(500).send("Error: " + err )

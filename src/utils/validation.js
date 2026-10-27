@@ -25,7 +25,7 @@ const loginValidation = (email,password) => {
 }
 
 const profileValidate = (req) => {
-    const editIncludes = ["firstName", "lastName", "age", "gender"];
+    const editIncludes = ["firstName", "lastName", "age", "gender", "photoUrl", "skills"];
     const isUpdateNeeded = Object.keys(req.body).every(key => editIncludes.includes(key));
     return isUpdateNeeded;
 }
