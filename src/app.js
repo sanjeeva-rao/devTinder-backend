@@ -8,6 +8,8 @@ const profileRouter = require("./routers/profile.js");
 const userRouter = require("./routers/userRouter.js");
 const cors = require("cors")
 
+require("dotenv").config();
+
 app.use(express.json());
 
 app.use(cookieParser());
@@ -21,7 +23,7 @@ app.use("/", userRouter)
 
 createDatabse().then(function(){
     console.log("connection success")
-    app.listen(7777,function(){
+    app.listen(process.env.port,function(){
         console.log("Server is listening on port number 7777")
     })
 }).catch(function(){
